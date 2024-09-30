@@ -5,13 +5,11 @@ public class Player : Character
     [SerializeField] private LayerMask floorLayer;
 
 
-    [SerializeField] private bool isMove = false;
     [SerializeField] private bool isStand = true;
 
 
     private void Start()
     {
-        isMove = false;
         isStand = true;
         isSitDown = false;
     }
@@ -27,26 +25,23 @@ public class Player : Character
             GetChairToSit();
 
         }
-        if (Vector3.Distance(transform.position, positionTarget) <= 0.2f)
+        if (Vector3.Distance(transform.position, positionTarget) <= 0.1f)
         {
             isStand = true;
-            isMove = false;
 
             if (isSitDown == true)
             {
-                SitDown();
                 isStand = false;
             }
         }
         else
         {
             isStand = false;
-            isMove = true;
             isSitDown = false;
         }
         if (isStand == true)
         {
-            ChangeAnim("Idle");
+            ChangeAnim(Constant.Anim_Idle);
         }
         if (currentChair != null)
         {
@@ -64,6 +59,8 @@ public class Player : Character
             Debug.Log(hit.point);
             Move(positionTarget);
             ResetChair();
+            StopCoroutine(SitDown());
+            
         }
     }
     private void GetChairToSit()
@@ -72,12 +69,22 @@ public class Player : Character
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 100))
         {
-            if (hit.collider.CompareTag("Chair"))
+            if (hit.collider.CompareTag(Constant.Tag_Chair))
             {
-                SetChair(hit.transform);
-                positionTarget = currentChair.GetComponent<Chair>().PositionSitDown.position;
-                Move(positionTarget);
+                if (hit.transform.GetComponent<Chair>().onerChair != null)
+                {
+                    return;
+                }
+                if (currentChair == hit.transform)
+                {
+                    return;
+                }
+                SetChair(hit.transform.GetComponent<Chair>());
+
+               
+                StartCoroutine(SitDown());
                 
+
             }
         }
     }

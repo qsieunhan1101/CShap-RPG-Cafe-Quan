@@ -1,36 +1,45 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Character : MonoBehaviour
 {
-    [SerializeField] private NavMeshAgent agent;
+    [SerializeField] protected NavMeshAgent agent;
 
     [SerializeField] protected Vector3 positionTarget;
 
     [SerializeField] protected Animator anim;
-    [SerializeField] protected string currentAnimName;
+    [SerializeField] protected string currentAnimName = "Idle";
 
-    [SerializeField] protected Transform currentChair;
+    [SerializeField] protected Chair currentChair = null;
 
     [SerializeField] protected bool isSitDown = false;
+
+
 
     private void Start()
     {
         positionTarget = transform.position;
     }
-    protected virtual void Move(Vector3 target)
+    public virtual void Move(Vector3 target)
     {
         agent.SetDestination(target);
-        ChangeAnim("Walk");
+        ChangeAnim(Constant.Anim_Walk);
     }
 
-    protected virtual void SitDown()
+    public virtual IEnumerator SitDown()
     {
+        positionTarget = currentChair.PositionSitDown.position;
+        Move(positionTarget);
+        Debug.Log("Cho di den vi tri ghe");
+        yield return new WaitUntil(() => IsFinishMove() == true);
         //quay lung ve ghe
         SetRotationSitDown();
         //Chay anim SitDown
-        ChangeAnim("SitDown");
-        
+        ChangeAnim(Constant.Anim_SitDown);
+
+        Debug.Log("Da ngoi ghe");
+
     }
 
     protected virtual void StandUp()
@@ -49,15 +58,29 @@ public class Character : MonoBehaviour
     }
     protected void SetRotationSitDown()
     {
-        Vector3 dic = (currentChair.GetComponent<Chair>().PositionSitDown.position - currentChair.transform.position).normalized;
+        Vector3 dic = (currentChair.PositionSitDown.position - currentChair.transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(dic);
     }
-    protected void SetChair(Transform newChair)
+    public void SetChair(Chair newChair)
     {
         currentChair = newChair;
+        currentChair.onerChair = this;
     }
-    protected void ResetChair()
+    public void ResetChair()
     {
+        if (currentChair != null)
+        {
+            currentChair.onerChair = null;
+        }
         currentChair = null;
     }
+    public bool IsFinishMove()
+    {
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            return true;
+        }
+        return false;
+    }
+
 }
