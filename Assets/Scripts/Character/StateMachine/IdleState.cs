@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class IdleState : IState
@@ -12,23 +10,27 @@ public class IdleState : IState
     {
         bot.StopMove();
         time = 0;
-        randomTimeIdle = Random.Range(4,6);
-        randomNextState = Random.Range(1,3);
+        randomTimeIdle = Random.Range(4, 6);
+        randomNextState = Random.Range(1, 3);
     }
 
     public void OnExercute(Bot bot)
     {
-        time += Time.deltaTime;
-        if (time >= randomTimeIdle)
+        if (bot.IsFinishMove() == true)
         {
-            if (randomNextState == 1)
+            time += Time.deltaTime;
+            if (time >= randomTimeIdle)
             {
-                bot.ChangeState(new WalkState());
-            }
-            if (randomNextState == 2)
-            {
-                bot.ChangeState(new SitChairState());
 
+                if (randomNextState == 1)
+                {
+                    bot.ChangeState(new WalkState());
+                }
+                if (randomNextState == 2)
+                {
+                    bot.ChangeState(new SitChairState());
+
+                }
             }
         }
     }

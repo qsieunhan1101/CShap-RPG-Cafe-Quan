@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WalkState : IState
@@ -11,9 +9,9 @@ public class WalkState : IState
     {
         bot.Move(MapManager.Instance.GetRandomPositionInMap());
         time = 0;
-        randomTimeWalk = Random.Range(4,6);
+        randomTimeWalk = Random.Range(4, 6);
         randomNextState = Random.Range(1, 3);
-        
+
     }
 
     public void OnExercute(Bot bot)
@@ -21,14 +19,7 @@ public class WalkState : IState
         time += Time.deltaTime;
         if (time >= randomTimeWalk || bot.IsFinishMove() == true)
         {
-            if (randomNextState == 1)
-            {
-                bot.ChangeState(new IdleState());
-            }
-            if (randomNextState == 2)
-            {
-                bot.ChangeState(new SitChairState());
-            }
+            bot.ChangeState(new IdleState());
         }
     }
 
