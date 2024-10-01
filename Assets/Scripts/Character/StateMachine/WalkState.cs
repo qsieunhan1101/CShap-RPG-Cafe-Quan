@@ -11,8 +11,8 @@ public class WalkState : IState
     {
         bot.Move(MapManager.Instance.GetRandomPositionInMap());
         time = 0;
+        randomTimeWalk = Random.Range(4,6);
         randomNextState = Random.Range(1, 3);
-        randomTimeWalk = Random.Range(3,5);
         
     }
 

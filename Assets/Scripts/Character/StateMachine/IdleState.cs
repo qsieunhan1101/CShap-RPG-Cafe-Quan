@@ -12,7 +12,7 @@ public class IdleState : IState
     {
         bot.StopMove();
         time = 0;
-        randomTimeIdle = Random.Range(2,4);
+        randomTimeIdle = Random.Range(4,6);
         randomNextState = Random.Range(1,3);
     }
 

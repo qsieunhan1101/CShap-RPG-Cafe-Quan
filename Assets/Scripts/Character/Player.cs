@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Player : Character
 {
@@ -55,8 +56,8 @@ public class Player : Character
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 100, floorLayer))
         {
-            positionTarget = hit.point;
-            Debug.Log(hit.point);
+            
+            positionTarget = CheckValidPositionNavMesh(hit.point, 5);
             Move(positionTarget);
             ResetChair();
             StopCoroutine(SitDown());
@@ -87,5 +88,15 @@ public class Player : Character
 
             }
         }
+    }
+    private Vector3 CheckValidPositionNavMesh(Vector3 pos, float radius)
+    {
+        NavMeshHit navHit;
+        bool checkValidPos = NavMesh.SamplePosition(pos,out navHit, radius, NavMesh.AllAreas);
+        if (checkValidPos == false)
+        {
+            return CheckValidPositionNavMesh(pos, radius+2);
+        }
+        return navHit.position;
     }
 }
