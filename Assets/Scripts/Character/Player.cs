@@ -8,11 +8,13 @@ public class Player : Character
 
     [SerializeField] private bool isStand = true;
 
+    private Coroutine sitDownCouroutine;
 
     private void Start()
     {
         isStand = true;
         isSitDown = false;
+
     }
     private void Update()
     {
@@ -56,12 +58,15 @@ public class Player : Character
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 100, floorLayer))
         {
-            
+
             positionTarget = CheckValidPositionNavMesh(hit.point, 5);
             Move(positionTarget);
             ResetChair();
-            StopCoroutine(SitDown());
-            
+            if (sitDownCouroutine != null)
+            {
+                StopCoroutine(sitDownCouroutine);
+            }
+
         }
     }
     private void GetChairToSit()
@@ -82,9 +87,7 @@ public class Player : Character
                 }
                 SetChair(hit.transform.GetComponent<Chair>());
 
-               
-                StartCoroutine(SitDown());
-                
+                sitDownCouroutine = StartCoroutine(SitDown());
 
             }
         }
@@ -92,10 +95,10 @@ public class Player : Character
     private Vector3 CheckValidPositionNavMesh(Vector3 pos, float radius)
     {
         NavMeshHit navHit;
-        bool checkValidPos = NavMesh.SamplePosition(pos,out navHit, radius, NavMesh.AllAreas);
+        bool checkValidPos = NavMesh.SamplePosition(pos, out navHit, radius, NavMesh.AllAreas);
         if (checkValidPos == false)
         {
-            return CheckValidPositionNavMesh(pos, radius+2);
+            return CheckValidPositionNavMesh(pos, radius + 2);
         }
         return navHit.position;
     }

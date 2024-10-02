@@ -58,10 +58,10 @@ public class Character : MonoBehaviour
     }
     protected void SetRotationSitDown()
     {
-        if (currentChair == null)
+   /*     if (currentChair == null)
         {
             return;
-        }
+        }*/
         Vector3 dic = (currentChair.PositionSitDown.position - currentChair.transform.position).normalized;
         transform.rotation = Quaternion.LookRotation(dic);
     }
