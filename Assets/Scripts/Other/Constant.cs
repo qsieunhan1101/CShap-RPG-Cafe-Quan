@@ -7,4 +7,5 @@ public class Constant
 
 
     public const string Tag_Chair = "Chair";
+    public const string Tag_Player = "Player";
 }

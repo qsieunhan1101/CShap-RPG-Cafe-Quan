@@ -31,14 +31,13 @@ public class Character : MonoBehaviour
     {
         positionTarget = currentChair.PositionSitDown.position;
         Move(positionTarget);
-        Debug.Log("Cho di den vi tri ghe");
         yield return new WaitUntil(() => IsFinishMove() == true);
         //quay lung ve ghe
         SetRotationSitDown();
         //Chay anim SitDown
         ChangeAnim(Constant.Anim_SitDown);
+        agent.ResetPath();
 
-        Debug.Log("Da ngoi ghe");
 
     }
 
